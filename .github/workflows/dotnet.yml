@@ -37,7 +37,7 @@ jobs:
         release_name="PinGod.VP-$tag-${{ matrix.target }}"
 
         # msbuild
-        msbuild.exe PinGod.VP.sln /p:Configuration=Release /p:DeployOnBuild=true /p:Platform=x86 -p:OutputPath="../../${release_name}/        
+        msbuild.exe PinGod.VP.sln /p:Configuration=Release /p:DeployOnBuild=true /p:Platform=x86 -p:OutputPath="../../${release_name}/"     
         7z a -tzip "${release_name}.zip" "./${release_name}/*"
         
         # Only need this for multiple platform
