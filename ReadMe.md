@@ -1,11 +1,11 @@
-﻿# PinGod.VP
+﻿# pingod-controller-com
 ---
 
 A COM controller to send / receive pinball events to Godot display.
 
 ## Controller Registry
 
-Use setup application to simplify regasm usage.
+Use the setup registry application to simplify regasm usage.
 
 ![image](screen.jpg)
 
@@ -15,11 +15,9 @@ Use setup application to simplify regasm usage.
 
 - Tables must have a `PinMameTimer` and `PulseTimer` to get updates from controller. 
 
-See the [BasicGame VPX][BasicGameVP Script](https://github.com/FlippingFlips/pingod-basicgame/tree/main/BasicGameVisualPinball) 
+- Example: [BasicGameVisualPinball](https://github.com/FlippingFlips/pingod-basicgame/tree/main/BasicGameVisualPinball) 
 
-## Examples
-
-[BasicGameVP Script](https://github.com/FlippingFlips/pingod-basicgame/blob/main/BasicGameVisualPinball/BasicGame-PinGod.vbs)
+- Script: [BasicGameVP Script](https://github.com/FlippingFlips/pingod-basicgame/blob/main/BasicGameVisualPinball/BasicGame-PinGod.vbs)
 
 ## VP Controller Methods
 
