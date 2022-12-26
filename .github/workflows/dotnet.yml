@@ -39,6 +39,7 @@ jobs:
         # msbuild
         msbuild.exe PinGod.VP.sln -p:Configuration=Release -p:DeployOnBuild=true -p:Platform=x86 -p:OutputPath="./${release_name}/"  
         7z a -tzip "${release_name}.zip" "D:/a/pingod-controller-com/pingod-controller-com/PinGod.VP/${release_name}/*"
+        7z a -tzip "${release_name}.zip" "D:/a/pingod-controller-com/pingod-controller-com/PinGod.VP.WPF/${release_name}/*"
         
         # Only need this for multiple platform
         # rm -r "$release_name"
