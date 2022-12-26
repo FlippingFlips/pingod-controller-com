@@ -28,7 +28,7 @@ jobs:
       uses: nuget/setup-nuget@v1
      
     - name: Restore NuGet Packages
-      run: nuget restore src/FlippingFlipsCOM.sln
+      run: nuget restore PinGod.VP.sln
  
     - name: Build
       shell: bash
