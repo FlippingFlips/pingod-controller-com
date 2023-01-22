@@ -11,10 +11,10 @@ jobs:
     name: Release
     strategy:
       matrix:
-        kind: ['linux']
+        kind: ['windows']
         include:
-          - kind: linux
-            os: ubuntu-latest
+          - kind: windows
+            os: windows-latest
             target: win-x86
     runs-on: ${{ matrix.os }}
     steps:
