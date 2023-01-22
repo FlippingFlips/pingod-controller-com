@@ -87,6 +87,12 @@ namespace PinGod.VP.Domain
         void Pause(int paused);
 
         /// <summary>
+        /// Resets the game
+        /// </summary>
+        [ComVisible(true)]
+        void Reset();
+
+        /// <summary>
         /// Runs a packaged game, no debug (if set by developer on export)
         /// </summary>
         /// <param name="vpHwnd"></param>

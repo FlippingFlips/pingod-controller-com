@@ -13,22 +13,19 @@ Private Sub LoadCore
 End Sub
 
 ' Cabinet switches
+'Const swCoin1  = 0
 Const swCoin1  = 1
 Const swCoin2  = 2
-Const swCoin3  = 3
-Const swCoin4  = 3
+Const swCoinDoor  = 3
 Const swCancel = 4
 Const swDown   = 5
 Const swUp     = 6
 Const swEnter  = 7
-Const swCoinDoor  = 8
-Const swLLFlip = 9
-Const swLRFlip = 11
-Const swULFlip = 13
-Const swURFlip = 15
+Const swLLFlip = 8
+Const swLRFlip = 9
+Const swStartButton = 10
 Const swSlamTilt = 16
-Const swTilt = 17
-Const swStartButton = 19
+Const swTilt = 23
 
 Private swStartButtonX,swCoinDoorX,swSlamTiltX
 On Error Resume Next

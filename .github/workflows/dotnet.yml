@@ -47,7 +47,7 @@ jobs:
     - name: Publish
       uses: softprops/action-gh-release@v1
       with:
-          tag_name: "1.62"
+          tag_name: "1.63"
           files: "PinGod.VP*"
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
