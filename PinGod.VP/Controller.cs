@@ -221,9 +221,11 @@ namespace PinGod.VP
         /// <param name="paused"></param>
         public void Pause(int paused)
         {
-            if (paused > 0) Switch(0, (int)GameSyncState.pause);
-            else Switch(0, (int)GameSyncState.resume);
+            if (paused > 0) _memoryMap.WriteGameState(GameSyncState.pause);
+            else _memoryMap.WriteGameState(GameSyncState.resume);
         }
+
+        public void Reset() => _memoryMap.WriteGameState(GameSyncState.reset);
 
         public void Run(int vpHwnd, string game)
         {
@@ -251,8 +253,9 @@ namespace PinGod.VP
         /// </summary>
         public void Stop()
         {
-            Switch(0, (int)GameSyncState.quit);
-            Task.Delay(1000); //give a little time for the game to pick up the quit
+            _memoryMap.WriteGameState(GameSyncState.quit);
+            
+            //Task.Delay(1000); //give a little time for the game to pick up the quit
 
             ControllerRunning = false;
             GameRunning = false;
@@ -334,16 +337,14 @@ namespace PinGod.VP
             Task.Run(() =>
             {
                 while (!GameRunning)
-                {                    
-                    var coils = _memoryMap.GetCoilStates();
-                    if(coils.Length > 1)
+                {
+                    var gameState = _memoryMap.GetGameState();
+                    if (gameState > 0)
                     {
-                        if(coils[1] == 1) // coil 0 is enabled, then set game running because screen has fully loaded
-                        {                            
-                            GameRunning = true;                            
-                            break;
-                        }
-                    }
+                        //set game running because screen has fully loaded
+                        GameRunning = true;
+                        break;
+                    }                    
                     else
                     {
                         Task.Delay(100);

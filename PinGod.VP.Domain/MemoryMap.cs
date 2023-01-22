@@ -12,6 +12,7 @@ namespace PinGod.VP.Domain
 
         private Mutex mutex;
         private MemoryMappedFile mmf;
+        private MemoryMappedViewAccessor gameStateMap;
         private MemoryMappedViewAccessor coilsMap;
         private MemoryMappedViewAccessor lampsMap;
         private MemoryMappedViewAccessor ledsMap;
@@ -43,8 +44,9 @@ namespace PinGod.VP.Domain
 #pragma warning disable CA1416 // Validate platform compatibility
                 mmf = MemoryMappedFile.CreateOrOpen(MAP_NAME, size, MemoryMappedFileAccess.ReadWrite);
 #pragma warning restore CA1416 // Validate platform compatibility
-                int offset = 0;
-                coilsMap = mmf.CreateViewAccessor(0, _coilStates.Length, MemoryMappedFileAccess.ReadWrite);
+                gameStateMap = mmf.CreateViewAccessor(0, 1, MemoryMappedFileAccess.ReadWrite);
+                int offset = 1;
+                coilsMap = mmf.CreateViewAccessor(offset, _coilStates.Length, MemoryMappedFileAccess.ReadWrite);
                 offset += _coilStates.Length;
                 lampsMap = mmf.CreateViewAccessor(offset, _lampStates.Length, MemoryMappedFileAccess.ReadWrite);
                 offset += _lampStates.Length;
@@ -118,5 +120,17 @@ namespace PinGod.VP.Domain
             ledsMap.Read<int>(ledNum, out var currState);
             return currState;
         }
+
+        /// <summary>
+        /// Gets the memory mapped position 0 for game state
+        /// </summary>
+        /// <returns></returns>
+        public GameSyncState GetGameState()
+        {
+            gameStateMap.Read<byte>(0, out var state);            
+            return (GameSyncState)state;
+        }
+
+        public void WriteGameState(GameSyncState state) => gameStateMap.Write(0, (byte)state);
     }
 }

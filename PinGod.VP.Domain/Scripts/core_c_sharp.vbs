@@ -4,6 +4,7 @@ Const VPinMAMEDriverVer = 3.57
 ' VPinMAME driver core.
 '=======================
 ' Changes Switch calls to Controller.Switch 36, 1 instead of Controller.Switch(36) = True
+' Use const PdbOffColor to set VP light color when light is off.
 ' New in 3.57 (Update by nFozzy, DJRobX, chepas, Gaston)
 ' - Beta 1 NF fastflips 2
 ' - Add UsePdbLeds(top of script)/ChangedPDLEDs(controller)/PDLedCallback(callback) support and PDB.vbs especially for VP-PROC
@@ -2946,7 +2947,7 @@ Sub PinMAMETimer_Timer
 				state = ChgLed(ii, 1)
 				color = ChgLed(ii, 2)			
 				'debug.print "led: " & idx & " state:" & color
-				if color = 0 Then state = 0
+				if color = 0 Then state = 0 : color =  PdbOffColor 'if color is 0 = black, then disable the light and set off color
 				If IsArray(Lights(idx)) Then
 					For Each tmp In Lights(idx) : tmp.Color = color : tmp.State = state : Next
 				Else
