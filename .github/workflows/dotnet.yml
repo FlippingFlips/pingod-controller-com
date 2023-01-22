@@ -33,7 +33,7 @@ jobs:
     - name: Build
       shell: bash
       run: |
-        tag=$(git describe --tags --abbrev=0)
+        tag=$(git describe --tags --always --abbrev=0)
         release_name="PinGod.VP-$tag-win-x86"
 
         # msbuild
