@@ -3,10 +3,10 @@ on:
   push:
     #branches: [ dev ] # should just build the release when pull request is completed
     tags:
-        - "dev*"    
+        - "v*"    
 jobs:
   release:
-    name: Develop
+    name: Release
     runs-on: windows-latest
     strategy:
       matrix:
