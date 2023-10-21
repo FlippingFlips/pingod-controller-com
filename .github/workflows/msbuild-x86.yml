@@ -45,4 +45,4 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         generateReleaseNotes: false       
         tag: ${{ github.ref_name }}
-        artifacts: ${{ steps.build.outputs.archive_directory }}/PinGod.VP-${{github.ref_name}}-${{ matrix.target }}.zip
+        artifacts: PinGod.VP-${{github.ref_name}}-${{ matrix.target }}.zip
