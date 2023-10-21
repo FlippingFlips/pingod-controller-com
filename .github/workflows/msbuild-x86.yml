@@ -1,4 +1,4 @@
-name: .Net 472 - x86
+name: Windows .Net 472 (x86, x64)
 on:
   push:
     #branches: [ dev ] # should just build the release when pull request is completed
@@ -13,7 +13,10 @@ jobs:
         include:
           - kind: windows
             os: windows-latest
-            target: win-x86
+            target: x86
+          - kind: windows
+            os: windows-latest
+            target: x64
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v1
@@ -32,9 +35,9 @@ jobs:
       shell: bash
       id: build
       run: |
-        release_name="PinGod.VP-${{github.ref_name}}-${{ matrix.target }}"
+        release_name="PinGod.VP-${{ matrix.target }}-${{github.ref_name}}"
         # msbuild
-        msbuild.exe PinGod.VP.sln -p:Configuration=Release -p:DeployOnBuild=true -p:Platform=x86 -p:OutputPath="./${release_name}/"  
+        msbuild.exe PinGod.VP.sln -p:Configuration=Release -p:DeployOnBuild=true -p:Platform=${{ matrix.target }} -p:OutputPath="./${release_name}/"  
         7z a -tzip "${release_name}.zip" "D:/a/pingod-controller-com/pingod-controller-com/PinGod.VP/${release_name}/*"
         7z a -tzip "${release_name}.zip" "D:/a/pingod-controller-com/pingod-controller-com/PinGod.VP.WPF/${release_name}/*"        
         # Only need this for multiple platform
@@ -45,4 +48,4 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         generateReleaseNotes: false       
         tag: ${{ github.ref_name }}
-        artifacts: PinGod.VP-${{github.ref_name}}-${{ matrix.target }}.zip
+        artifacts: PinGod.VP-${{ matrix.target }}-${{github.ref_name}}.zip
