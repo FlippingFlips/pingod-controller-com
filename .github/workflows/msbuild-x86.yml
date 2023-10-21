@@ -1,9 +1,9 @@
 name: .Net 472 - x86
 on:
   push:
-    branches: [ dev ] # should just build the release when pull request is completed
-    #tags:
-    #  - "dev*"
+    #branches: [ dev ] # should just build the release when pull request is completed
+    tags:
+        - "dev*"
 jobs:
   release:
     name: Develop
@@ -45,6 +45,6 @@ jobs:
       uses: ncipollo/release-action@v1.12.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        generateReleaseNotes: true
+        generateReleaseNotes: false       
         tag: ${{ github.ref_name }}
-        artifacts: ${{ steps.export.outputs.archive_directory }}/PinGod.VP-${{ matrix.target }}.zip
+        artifacts: ${{ steps.export.outputs.archive_directory }}/PinGod.VP-${{github.ref_name}}-${{ matrix.target }}.zip
