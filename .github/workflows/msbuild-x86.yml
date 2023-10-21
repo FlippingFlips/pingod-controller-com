@@ -13,10 +13,7 @@ jobs:
         include:
           - kind: windows
             os: windows-latest
-            target: x86
-          - kind: windows
-            os: windows-latest
-            target: x64
+            target: [x86, x64]
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v1
