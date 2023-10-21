@@ -255,7 +255,7 @@ namespace PinGod.VP
         {
             _memoryMap.WriteGameState(GameSyncState.quit);
             
-            //Task.Delay(1000); //give a little time for the game to pick up the quit
+            Task.Delay(1000); //give a little time for the game to pick up the quit
 
             ControllerRunning = false;
             GameRunning = false;
@@ -339,9 +339,8 @@ namespace PinGod.VP
                 while (!GameRunning)
                 {
                     var gameState = _memoryMap.GetGameState();
-                    if (gameState > 0)
+                    if (gameState > GameSyncState.None)
                     {
-                        //set game running because screen has fully loaded
                         GameRunning = true;
                         break;
                     }                    
@@ -349,23 +348,28 @@ namespace PinGod.VP
                     {
                         Task.Delay(100);
                     }                    
-                }
-
-                //activate VP 2 - when game is running
-                SetGameDisplayRunning();
+                }                
             });
 
+            //activate VP 2 - when game is running
+            SetGameDisplayRunning();
+
+            Task.Delay(500);
+
+            //set game running because screen has fully loaded
+            GameRunning = true;
 
             //activate VP 1 - to hide debug window if present
             SetGameDisplayRunning();
         }
 
         bool isDisposing = false;
+        bool disposed = false;
         public void Dispose()
         {
-            if (isDisposing) return;
+            if (isDisposing || disposed) return;
             isDisposing = true;
-            try { _memoryMap.Dispose(); }catch { }
+            try { _memoryMap.Dispose(); disposed = true; } catch { }
             
         }
         #endregion

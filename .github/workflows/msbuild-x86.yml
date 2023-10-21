@@ -1,14 +1,12 @@
-name: .Net 472
-
+name: .Net 472 - x86
 on:
   push:
-    branches: [ main ] # should just build the release when pull request is completed
-#  pull_request:
-#    branches: [ main ]
-
+    branches: [ dev ] # should just build the release when pull request is completed
+    tags:
+      - "dev*"
 jobs:
   release:
-    name: Release
+    name: Develop
     strategy:
       matrix:
         kind: ['windows']
@@ -34,7 +32,7 @@ jobs:
       shell: bash
       run: |
         tag=$(git describe --tags --always --abbrev=0)
-        release_name="PinGod.VP-$tag-win-x86"
+        release_name="PinGod.VP-$tag-win-${{ matrix.target }}"
 
         # msbuild
         msbuild.exe PinGod.VP.sln -p:Configuration=Release -p:DeployOnBuild=true -p:Platform=x86 -p:OutputPath="./${release_name}/"  
@@ -42,12 +40,11 @@ jobs:
         7z a -tzip "${release_name}.zip" "D:/a/pingod-controller-com/pingod-controller-com/PinGod.VP.WPF/${release_name}/*"
         
         # Only need this for multiple platform
-        # rm -r "$release_name"
-
-    - name: Publish
-      uses: softprops/action-gh-release@v1
+        # rm -r "$release_name"  
+    - name: create release
+      uses: ncipollo/release-action@v1.12.0
       with:
-          tag_name: "1.63"
-          files: "PinGod.VP-*"
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
+        token: ${{ secrets.GITHUB_TOKEN }}
+        generateReleaseNotes: true
+        tag: ${{ github.ref_name }}
+        artifacts: ${release_name}.zip

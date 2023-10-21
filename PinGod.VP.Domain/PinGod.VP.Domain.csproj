@@ -6,10 +6,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="builds\**" />
+    <EmbeddedResource Remove="builds\**" />
+    <None Remove="builds\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ReadMe.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\core_c_sharp.vbs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Scripts\PinGod.vbs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\PinGod_PROC_PDB.vbs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
