@@ -7,15 +7,10 @@ on:
 jobs:
   release:
     name: Develop
+    runs-on: windows-latest
     strategy:
       matrix:
-        kind: ['windows']
-        include:
-          - os: windows-latest
-            target: x86
-          - os: windows-latest
-            target: x64
-    runs-on: ${{ matrix.os }}
+        target: [x86, x64] 
     steps:
     - uses: actions/checkout@v1
       name: Checkout Code     
