@@ -11,9 +11,10 @@ jobs:
       matrix:
         kind: ['windows']
         include:
-          - kind: windows
-            os: windows-latest
-            target: [x86, x64]
+          - os: windows-latest
+            target: x86
+          - os: windows-latest
+            target: x64
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v1
