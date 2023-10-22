@@ -9,14 +9,36 @@ namespace PinGod.VP.Domain
     public interface IController
     {
         #region Display Properties
+
+        /// <summary> Set this to true if want to override the project display settings</summary>
+        bool DisplayOverrideOn { get; set; }
+
+        /// <summary> set windows on top </summary>
         bool DisplayAlwaysOnTop { get; set; }
+
+        /// <summary> </summary>
         bool DisplayFullScreen { get; set; }
+
+        /// <summary> Display Height </summary>
         int DisplayHeight { get; set; }
-        bool DisplayLowDpi { get; set; }
-        bool DisplayNoWindow { get; set; }
+
+        /// <summary> Display Width </summary>
         int DisplayWidth { get; set; }
+
+        /// <summary> position X </summary>
         int DisplayX { get; set; }
+
+        /// <summary> position Y </summary>
         int DisplayY { get; set; }
+
+        /// <summary> Run window maximized </summary>
+        bool DisplayMaximized { get; set; }
+
+        /// <summary> Run windowed </summary>
+        bool DisplayWindowed { get; set; }
+
+        /// <summary> Screen number to display, position ignored if set? </summary>
+        bool DisplayScreen { get; set; }
         #endregion
 
         #region Machine Items
@@ -25,6 +47,9 @@ namespace PinGod.VP.Domain
         byte LedCount { get; set; }
         byte SwitchCount { get; set; }
         #endregion
+
+        /// <summary> custom args to send to the window, overrides display settings </summary>
+        string Arguments { get; set; }
 
         bool GameRunning { get; set; }
 
@@ -54,6 +79,10 @@ namespace PinGod.VP.Domain
         /// <param name="size"></param>
         [ComVisible(true)]
         void CreateMemoryMap(long size = 2048);
+
+        /// <summary>Try activate the simulator window</summary>
+        [ComVisible(true)]
+        void FocusSimulator();
 
         /// <summary>
         /// Gets lamp state

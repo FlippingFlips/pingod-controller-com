@@ -11,48 +11,40 @@ namespace PinGod.VP
     [GuidAttribute(ContractGuids.ControllerClass)]
     public class Controller : IController, IDisposable
     {
-        private Process displayProcess;
-        private MemoryMap _memoryMap;
-
-        byte[] _lastCoilStates;       
-        byte[] _lastLampStates;       
+        byte[] _lastCoilStates;
+        byte[] _lastLampStates;
         int[] _lastLedStates;
+        private MemoryMap _memoryMap;
+        private Process displayProcess;
+        int vpHwnd;
+        public Controller() { }
 
+        public string Arguments { get; set; }
+        public byte CoilCount { get; set; } = 32;
         public bool ControllerRunning { get; set; }
         public bool GameRunning { get; set; }
 
         #region Display Properties
+        public bool DisplayAlwaysOnTop { get; set; }
         public bool DisplayFullScreen { get; set; }
-        public int DisplayWidth { get; set; }
         public int DisplayHeight { get; set; }
+        public bool DisplayMaximized { get; set; }
+        public bool DisplayOverrideOn { get; set; }
+        public bool DisplayScreen { get; set; }
+        public int DisplayWidth { get; set; }
+        public bool DisplayWindowed { get; set; }
         public int DisplayX { get; set; }
         public int DisplayY { get; set; }
-        public bool DisplayAlwaysOnTop { get; set; }
-        public bool DisplayLowDpi { get; set; }
-        public bool DisplayNoWindow { get; set; }
-        public bool DisplayNoBorder { get; set; }
-        public bool DisplayMaximized { get; set; }
         #endregion
-
-        public byte CoilCount { get; set; } = 32;
         public byte LampCount { get; set; } = 64;
         public byte LedCount { get; set; } = 64;
         public byte SwitchCount { get; set; } = 64;
 
-        int vpHwnd;
-
-        public Controller()
-        {
-            _memoryMap = new MemoryMap();            
-        }
-
         [DllImportAttribute("User32.dll")]
         public static extern System.IntPtr BringWindowToTop(int hWnd);
 
-        public void CreateMemoryMap(long size = 2048)
-        {
-            _memoryMap.CreateMemoryMap(size, coils: CoilCount, lamps: LampCount, leds: LedCount);
-        }
+        [DllImportAttribute("User32.dll")]
+        public static extern System.IntPtr SetForegroundWindow(int hWnd);
 
         /// <summary>
         /// Gets changed from memory map
@@ -119,14 +111,14 @@ namespace PinGod.VP
             {
                 //collect the changed coils
                 List<int> chgd = new List<int>();
-                for (int i = 0; i < _ledStates.Length; i+=3)
+                for (int i = 0; i < _ledStates.Length; i += 3)
                 {
                     //check for state and colour
                     if (_ledStates[i + 1] != _lastLedStates[i + 1] || _ledStates[i + 2] != _lastLedStates[i + 2])
                     {
                         chgd.Add(_ledStates[i]);
-                        chgd.Add(_ledStates[i+1]);
-                        chgd.Add(_ledStates[i+2]);
+                        chgd.Add(_ledStates[i + 1]);
+                        chgd.Add(_ledStates[i + 2]);
                     }
                 }
 
@@ -142,7 +134,7 @@ namespace PinGod.VP
                 //have to convert the object array for VP, PITA
                 int c = 0;
                 arr = new object[chgd.Count / 3, 3];
-                for (int ii = 0; ii < chgd.Count; ii +=3)
+                for (int ii = 0; ii < chgd.Count; ii += 3)
                 {
                     arr[c, 0] = chgd[ii];
                     arr[c, 1] = chgd[ii + 1];
@@ -174,25 +166,25 @@ namespace PinGod.VP
                 return arr;
             }
             if (_coilStates != _lastCoilStates)
-            {                
+            {
                 //collect the changed coils
-                List<byte> chgd = new List<byte>();                
-                for (int i = 0; i < _coilStates.Length; i+=2)
+                List<byte> chgd = new List<byte>();
+                for (int i = 0; i < _coilStates.Length; i += 2)
                 {
-                    if (_coilStates[i+1] != _lastCoilStates[i+1])
+                    if (_coilStates[i + 1] != _lastCoilStates[i + 1])
                     {
-                        chgd.Add(_coilStates[i]); 
-                        chgd.Add(_coilStates[i+1]);
+                        chgd.Add(_coilStates[i]);
+                        chgd.Add(_coilStates[i + 1]);
                     }
                 }
 
                 //have to convert the object array for VP, PITA
                 int c = 0;
-                arr = new object[chgd.Count/2, 2];                
-                for (int ii = 0; ii < chgd.Count; ii+=2)
+                arr = new object[chgd.Count / 2, 2];
+                for (int ii = 0; ii < chgd.Count; ii += 2)
                 {
                     arr[c, 0] = chgd[ii];
-                    arr[c, 1] = chgd[ii+1];
+                    arr[c, 1] = chgd[ii + 1];
                     c++;
                 }
                 //Array.Copy(chgd.ToArray(), arr, chgd.Count); //Cant array copy multi dimension?
@@ -206,14 +198,22 @@ namespace PinGod.VP
             }
         }
 
-        /// <summary>
-        /// Activates Visual Pinball
-        /// </summary>
-        private void SetGameDisplayRunning()
-        {            
-            ActivateVpWindow(vpHwnd);
-            BringWindowToTop(vpHwnd);
+        public void CreateMemoryMap(long size = 2048)
+        {
+            _memoryMap.CreateMemoryMap(size, coils: CoilCount, lamps: LampCount, leds: LedCount);
         }
+
+        /// <summary> brings window handle to top and sets foreground </summary>
+        public void FocusSimulator() 
+        {
+            BringWindowToTop(this.vpHwnd); SetForegroundWindow(this.vpHwnd); 
+        }
+
+        public int GetLamp(int lampNum) => _memoryMap?.GetLamp(lampNum) ?? 0;
+
+        public int GetLed(int ledNum) => _memoryMap?.GetLed(ledNum) ?? 0;
+
+        public int GetSwitch(int swNum) => _memoryMap?.GetSwitch(swNum) ?? 0;
 
         /// <summary>
         /// Pause the display with Switch 0 and value
@@ -229,7 +229,9 @@ namespace PinGod.VP
 
         public void Run(int vpHwnd, string game)
         {
-            var sinfo = new ProcessStartInfo(game, DisplayNoWindow ? "--no-window" : "");
+            string godotArgs = GetGodotArgs();
+            var sinfo = new ProcessStartInfo(game, godotArgs);
+
             Run(vpHwnd, sinfo);
         }
 
@@ -240,13 +242,12 @@ namespace PinGod.VP
         /// <param name="game"></param>
         public void RunDebug(int vpHwnd, string game)
         {
-            var sinfo = new ProcessStartInfo("godot", DisplayNoWindow ? "--no-window" : "");
+            string godotArgs = GetGodotArgs();
+            var sinfo = new ProcessStartInfo("godot", godotArgs);
+
             sinfo.WorkingDirectory = game;
             Run(vpHwnd, sinfo);
         }
-
-        [DllImportAttribute("User32.dll")]
-        public static extern System.IntPtr SetForegroundWindow(int hWnd);
 
         /// <summary>
         /// Stop and clean up
@@ -254,13 +255,14 @@ namespace PinGod.VP
         public void Stop()
         {
             _memoryMap.WriteGameState(GameSyncState.quit);
-            
-            //Task.Delay(1000); //give a little time for the game to pick up the quit
+
+            Task.Delay(1000); //give a little time for the game to pick up the quit
 
             ControllerRunning = false;
             GameRunning = false;
 
             //displayProcess?.Kill();
+            displayProcess?.Close();
             displayProcess = null;
 
             this.Dispose();
@@ -273,19 +275,37 @@ namespace PinGod.VP
         /// <param name="state"></param>
         public void Switch(int swNum, int state)
         {
-            if(swNum >= 0 && swNum < 256)
+            if (swNum >= 0 && swNum < 256)
             {
                 _memoryMap.SetSwitch(swNum, (byte)state);
-            }            
+            }
         }
 
-        public int GetLamp(int lampNum) => _memoryMap?.GetLamp(lampNum) ?? 0;
-
-        public int GetLed(int ledNum) => _memoryMap?.GetLed(ledNum) ?? 0;
-
-        public int GetSwitch(int swNum) => _memoryMap?.GetSwitch(swNum) ?? 0;
+        /// <summary> build window args from custom args or display properties </summary>
+        /// <returns></returns>
+        private string GetGodotArgs()
+        {
+            string godotArgs = string.Empty;
+            if (!string.IsNullOrWhiteSpace(Arguments))
+                godotArgs = Arguments;
+            else if (DisplayOverrideOn)
+                godotArgs = BuildDisplayArguments();
+            return godotArgs;
+        }
 
         #region Private methods
+
+        bool disposed = false;
+
+        bool isDisposing = false;
+
+        public void Dispose()
+        {
+            if (isDisposing || disposed) return;
+            isDisposing = true;
+            try { _memoryMap.Dispose(); disposed = true; } catch { }
+
+        }
 
         /// <summary>
         /// Activates the Visual pinball player
@@ -310,10 +330,9 @@ namespace PinGod.VP
                 displayArgs += $"--resolution {DisplayWidth}x{DisplayHeight}";
             displayArgs = DisplayFullScreen ? displayArgs += " -f" : displayArgs;
             displayArgs = DisplayAlwaysOnTop ? displayArgs += " -t" : displayArgs;
-            displayArgs = DisplayLowDpi ? displayArgs += " --low-dpi" : displayArgs;
-            displayArgs = DisplayNoWindow ? displayArgs += " --no-window" : displayArgs;
-            displayArgs = DisplayNoBorder ? displayArgs += " -lf true" : displayArgs;
+            displayArgs = DisplayScreen ? displayArgs += $" --screen {DisplayScreen}" : displayArgs;
             displayArgs = DisplayMaximized ? displayArgs += " -m" : displayArgs;
+            displayArgs = DisplayWindowed ? displayArgs += " -w" : displayArgs;
             return displayArgs;
         }
 
@@ -321,6 +340,8 @@ namespace PinGod.VP
         {
             //VP game window
             this.vpHwnd = vpHwnd;
+
+            _memoryMap = new MemoryMap();
 
             //create mapping for machine states
             CreateMemoryMap();
@@ -333,40 +354,25 @@ namespace PinGod.VP
             displayProcess.StartInfo = startInfo;
             displayProcess.Start();
 
-            //wait for the game window to send over the 0 coil to enable Visual Pinball
             Task.Run(() =>
             {
                 while (!GameRunning)
                 {
                     var gameState = _memoryMap.GetGameState();
-                    if (gameState > 0)
+                    if (gameState > GameSyncState.None)
                     {
-                        //set game running because screen has fully loaded
                         GameRunning = true;
+                        FocusSimulator();
                         break;
                     }                    
                     else
                     {
                         Task.Delay(100);
                     }                    
-                }
-
-                //activate VP 2 - when game is running
-                SetGameDisplayRunning();
+                }                
             });
 
-
-            //activate VP 1 - to hide debug window if present
-            SetGameDisplayRunning();
-        }
-
-        bool isDisposing = false;
-        public void Dispose()
-        {
-            if (isDisposing) return;
-            isDisposing = true;
-            try { _memoryMap.Dispose(); }catch { }
-            
+            Task.Delay(500);
         }
         #endregion
     }

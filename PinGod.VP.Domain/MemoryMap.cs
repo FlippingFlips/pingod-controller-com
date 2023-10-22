@@ -127,7 +127,7 @@ namespace PinGod.VP.Domain
         /// <returns></returns>
         public GameSyncState GetGameState()
         {
-            gameStateMap.Read<byte>(0, out var state);            
+            gameStateMap.Read(0, out byte state);            
             return (GameSyncState)state;
         }
 

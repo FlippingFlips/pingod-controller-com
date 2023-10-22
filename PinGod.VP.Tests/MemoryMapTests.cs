@@ -48,7 +48,9 @@ namespace PinGod.VP.Tests
         public void ChangedSolenoids_WithMemoryMaps()
         {
             SetupBuffers();
-            var va = mmf.CreateViewAccessor(0, _coils.Length, MemoryMappedFileAccess.ReadWrite);
+
+            //Give offset of 1 for GameState
+            var va = mmf.CreateViewAccessor(1, _coils.Length, MemoryMappedFileAccess.ReadWrite);
 
             //call the controller once to init states then set 23=1 and assert that change
             object[,] arrResult = Controller.ChangedSolenoids();
@@ -76,7 +78,9 @@ namespace PinGod.VP.Tests
         {
             SetupBuffers();
             _lamps = new byte[Controller.LampCount * 2]; //lamps to test with
-            var va = mmf.CreateViewAccessor(Controller.CoilCount * 2, Controller.LampCount * 2, MemoryMappedFileAccess.ReadWrite);
+
+            //Give offset of 1 for GameState
+            var va = mmf.CreateViewAccessor(1 + Controller.CoilCount * 2, Controller.LampCount * 2, MemoryMappedFileAccess.ReadWrite);
 
             //call the controller once to init states then set 23=1 and assert that change
             object[,] arrResult = Controller.ChangedLamps();
@@ -103,7 +107,9 @@ namespace PinGod.VP.Tests
         public void ChangedLeds_WithMemoryMaps()
         {
             SetupBuffers();
-            var va = mmf.CreateViewAccessor(Controller.CoilCount * 2 + Controller.LampCount * 2, sizeof(int) * Controller.LedCount * 3, MemoryMappedFileAccess.ReadWrite);
+
+            //Give offset of 1 for GameState
+            var va = mmf.CreateViewAccessor(1 + Controller.CoilCount * 2 + Controller.LampCount * 2, sizeof(int) * Controller.LedCount * 3, MemoryMappedFileAccess.ReadWrite);
 
             //call the controller once to init states then set 23=1 and assert that change
             object[,] arrResult = Controller.ChangedPDLeds();
@@ -137,7 +143,9 @@ namespace PinGod.VP.Tests
 
             //offset 960
             var offset = Controller.CoilCount * 2 + Controller.LampCount * 2 + sizeof(int) * Controller.LedCount * 3;
-            var va = mmf.CreateViewAccessor(offset, Controller.SwitchCount * 2, MemoryMappedFileAccess.ReadWrite);
+
+            //Give offset of 1 for GameState
+            var va = mmf.CreateViewAccessor(1 + offset, Controller.SwitchCount * 2, MemoryMappedFileAccess.ReadWrite);
 
             //set some switches
             Controller.Switch(0, 1);
@@ -166,7 +174,9 @@ namespace PinGod.VP.Tests
 
             //offset 960
             var offset = Controller.CoilCount * 2 + Controller.LampCount * 2 + sizeof(int) * Controller.LedCount * 3;
-            var va = mmf.CreateViewAccessor(offset, Controller.SwitchCount * 2, MemoryMappedFileAccess.ReadWrite);
+
+            //Give offset of 1 for GameState
+            var va = mmf.CreateViewAccessor(1 + offset, Controller.SwitchCount * 2, MemoryMappedFileAccess.ReadWrite);
 
             //set some switches
             Controller.Switch(0, 1);

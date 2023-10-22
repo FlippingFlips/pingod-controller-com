@@ -13,19 +13,22 @@ Private Sub LoadCore
 End Sub
 
 ' Cabinet switches
-'Const swCoin1  = 0
-Const swCoin1  = 1
-Const swCoin2  = 2
-Const swCoinDoor  = 3
+Const swCoin1  = 0
+Const swCoin2  = 1
+Const swCoin3  = 2
+Const swCoin4  = 3
 Const swCancel = 4
 Const swDown   = 5
 Const swUp     = 6
 Const swEnter  = 7
-Const swLLFlip = 8
-Const swLRFlip = 9
-Const swStartButton = 10
+Const swCoinDoor  = 8
+Const swLLFlip = 9
+Const swLRFlip = 11
+Const swULFlip = 13
+Const swURFlip = 15
 Const swSlamTilt = 16
-Const swTilt = 23
+Const swTilt = 17
+Const swStartButton = 19
 
 Private swStartButtonX,swCoinDoorX,swSlamTiltX
 On Error Resume Next
@@ -111,7 +114,7 @@ Function vpmKeyUp(ByVal keycode)
 			'Case keyShowKeys     .Pause = True : vpmShowHelp : .Pause = False
 			'Case keyShowDips     If IsObject(vpmShowDips) Then .Pause = True : vpmShowDips : .Pause = False
 			'Case keyAddBall      .Pause = True : vpmAddBall  : .Pause = False
-			'Case keyReset        .Stop : BeginModal : .Run : vpmTimer.Reset : EndModal
+			Case keyReset        .Reset : vpmTimer.Reset
 			Case keyFrame        .LockDisplay = Not .LockDisplay
 			Case keyDoubleSize   .DoubleSize  = Not .DoubleSize
 			Case Else            vpmKeyUp = False
