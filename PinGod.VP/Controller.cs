@@ -17,13 +17,9 @@ namespace PinGod.VP
         private MemoryMap _memoryMap;
         private Process displayProcess;
         int vpHwnd;
-        public Controller()
-        {
-            _memoryMap = new MemoryMap();
-        }
+        public Controller() { }
 
         public string Arguments { get; set; }
-
         public byte CoilCount { get; set; } = 32;
         public bool ControllerRunning { get; set; }
         public bool GameRunning { get; set; }
@@ -43,6 +39,7 @@ namespace PinGod.VP
         public byte LampCount { get; set; } = 64;
         public byte LedCount { get; set; } = 64;
         public byte SwitchCount { get; set; } = 64;
+
         [DllImportAttribute("User32.dll")]
         public static extern System.IntPtr BringWindowToTop(int hWnd);
 
@@ -205,6 +202,13 @@ namespace PinGod.VP
         {
             _memoryMap.CreateMemoryMap(size, coils: CoilCount, lamps: LampCount, leds: LedCount);
         }
+
+        /// <summary> brings window handle to top and sets foreground </summary>
+        public void FocusSimulator() 
+        {
+            BringWindowToTop(this.vpHwnd); SetForegroundWindow(this.vpHwnd); 
+        }
+
         public int GetLamp(int lampNum) => _memoryMap?.GetLamp(lampNum) ?? 0;
 
         public int GetLed(int ledNum) => _memoryMap?.GetLed(ledNum) ?? 0;
@@ -289,14 +293,6 @@ namespace PinGod.VP
             return godotArgs;
         }
 
-        /// <summary>
-        /// Activates Visual Pinball
-        /// </summary>
-        private void SetGameDisplayRunning()
-        {            
-            ActivateVpWindow(vpHwnd);
-            BringWindowToTop(vpHwnd);
-        }
         #region Private methods
 
         bool disposed = false;
@@ -345,6 +341,8 @@ namespace PinGod.VP
             //VP game window
             this.vpHwnd = vpHwnd;
 
+            _memoryMap = new MemoryMap();
+
             //create mapping for machine states
             CreateMemoryMap();
 
@@ -356,7 +354,6 @@ namespace PinGod.VP
             displayProcess.StartInfo = startInfo;
             displayProcess.Start();
 
-            //wait for the game window to send over the 0 coil to enable Visual Pinball
             Task.Run(() =>
             {
                 while (!GameRunning)
@@ -364,8 +361,8 @@ namespace PinGod.VP
                     var gameState = _memoryMap.GetGameState();
                     if (gameState > GameSyncState.None)
                     {
-                        SetGameDisplayRunning(); //try activate VP
-                        GameRunning = true;                        
+                        GameRunning = true;
+                        FocusSimulator();
                         break;
                     }                    
                     else
@@ -375,16 +372,7 @@ namespace PinGod.VP
                 }                
             });
 
-            //activate VP 2 - when game is running
-            SetGameDisplayRunning();
-
             Task.Delay(500);
-
-            //set game running because screen has fully loaded
-            GameRunning = true;
-
-            //activate VP 1 - to hide debug window if present
-            SetGameDisplayRunning();
         }
         #endregion
     }

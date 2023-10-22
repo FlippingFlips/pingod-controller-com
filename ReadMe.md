@@ -40,6 +40,7 @@ Visual pinball keeps machine settings and global scripts in its `Scripts` direct
 |Const UseSolenoids = 1|Enable / Disable checking the solenoid states|
 |Const UseLamps = 1|Enable / Disable checking the lamp states|
 |Const UsePdbLeds = 1|Enable / Disable checking the led states|
+|Const PdbOffColor = 3815994| colour state when off to hide it|
 
 *Must be excplitly set to 0 if not using them and want to save some process* See `core_c_sharp.vbs`
 

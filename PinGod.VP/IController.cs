@@ -80,6 +80,10 @@ namespace PinGod.VP.Domain
         [ComVisible(true)]
         void CreateMemoryMap(long size = 2048);
 
+        /// <summary>Try activate the simulator window</summary>
+        [ComVisible(true)]
+        void FocusSimulator();
+
         /// <summary>
         /// Gets lamp state
         /// </summary>
