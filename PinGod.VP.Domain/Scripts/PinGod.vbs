@@ -1,15 +1,13 @@
-' Default machine By HorsePin, github.com/flippingFlips. Needs a `core_c_sharp.vbs`
-
 Option Explicit
 LoadCore
 Private Sub LoadCore
 	On Error Resume Next
 	If VPBuildVersion < 0 Or Err Then
 		Dim fso : Set fso = CreateObject("Scripting.FileSystemObject") : Err.Clear
-		ExecuteGlobal fso.OpenTextFile("core_c_sharp.vbs", 1).ReadAll    : If Err Then MsgBox "Can't open ""core_c_sharp.vbs""" : Exit Sub
+		ExecuteGlobal fso.OpenTextFile("core_c_sharp.vbs", 1).ReadAll    : If Err Then MsgBox "Can't open ""PTCore.vbs""" : Exit Sub
 		ExecuteGlobal fso.OpenTextFile("VPMKeys.vbs", 1).ReadAll : If Err Then MsgBox "Can't open ""vpmkeys.vbs""" : Exit Sub
 	Else
-		ExecuteGlobal GetTextFile("core_c_sharp.vbs")    : If Err Then MsgBox "Can't open ""core_c_sharp.vbs"""    : Exit Sub
+		ExecuteGlobal GetTextFile("core_c_sharp.vbs")    : If Err Then MsgBox "Can't open ""PTCore.vbs"""    : Exit Sub
 		ExecuteGlobal GetTextFile("VPMKeys.vbs") : If Err Then MsgBox "Can't open ""vpmkeys.vbs""" : Exit Sub
 	End If
 End Sub
@@ -18,19 +16,19 @@ End Sub
 Const swCoin1  = 0
 Const swCoin2  = 1
 Const swCoin3  = 2
+'Const swCoin4  = 3
 Const swCoinDoor  = 3
 Const swEnter  = 4
 Const swDown   = 5
 Const swUp     = 6
 Const swCancel = 7
-Const swStartButton = 8
-Const swTilt = 9
-Const swSlamTilt = 10
-' dont need end of stroke switches
 Const swLLFlip = 16
-Const swULFlip = 17
 Const swLRFlip = 18
+Const swULFlip = 17
 Const swURFlip = 19
+Const swSlamTilt = 10
+Const swTilt = 9
+Const swStartButton = 8
 
 Private swStartButtonX,swCoinDoorX,swSlamTiltX
 On Error Resume Next
@@ -66,7 +64,7 @@ Function vpmKeyDown(ByVal keycode)
 			Case keyInsertCoin1  vpmTimer.AddTimer 150,"vpmTimer.PulseSw swCoin1'" : Playsound SCoin
 			Case keyInsertCoin2  vpmTimer.AddTimer 150,"vpmTimer.PulseSw swCoin2'" : Playsound SCoin
 			Case keyInsertCoin3  vpmTimer.AddTimer 150,"vpmTimer.PulseSw swCoin3'" : Playsound SCoin
-			'Case keyInsertCoin4  vpmTimer.AddTimer 150,"vpmTimer.PulseSw swCoin4'" : Playsound SCoin
+			Case keyInsertCoin4  vpmTimer.AddTimer 150,"vpmTimer.PulseSw swCoin4'" : Playsound SCoin
 			Case StartGameKey    swCopy = swStartButtonX : .Switch swCopy,1
 			Case keyCancel       swCopy = swCancel :       .Switch swCopy,1
 			Case keyDown         swCopy = swDown :         .Switch swCopy,1

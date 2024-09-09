@@ -4,10 +4,10 @@ Private Sub LoadCore
 	On Error Resume Next
 	If VPBuildVersion < 0 Or Err Then
 		Dim fso : Set fso = CreateObject("Scripting.FileSystemObject") : Err.Clear
-		ExecuteGlobal fso.OpenTextFile("core_c_sharp.vbs", 1).ReadAll    : If Err Then MsgBox "Can't open ""PTCore.vbs""" : Exit Sub
+		ExecuteGlobal fso.OpenTextFile("core_c_sharp.vbs", 1).ReadAll    : If Err Then MsgBox "Can't open ""core_c_sharp.vbs""" : Exit Sub
 		ExecuteGlobal fso.OpenTextFile("VPMKeys.vbs", 1).ReadAll : If Err Then MsgBox "Can't open ""vpmkeys.vbs""" : Exit Sub
 	Else
-		ExecuteGlobal GetTextFile("core_c_sharp.vbs")    : If Err Then MsgBox "Can't open ""PTCore.vbs"""    : Exit Sub
+		ExecuteGlobal GetTextFile("core_c_sharp.vbs")    : If Err Then MsgBox "Can't open ""core_c_sharp.vbs"""    : Exit Sub
 		ExecuteGlobal GetTextFile("VPMKeys.vbs") : If Err Then MsgBox "Can't open ""vpmkeys.vbs""" : Exit Sub
 	End If
 End Sub
@@ -16,19 +16,18 @@ End Sub
 Const swCoin1  = 0
 Const swCoin2  = 1
 Const swCoin3  = 2
-Const swCoin4  = 3
-Const swCancel = 4
+Const swCoinDoor  = 3
+Const swEnter  = 4
 Const swDown   = 5
 Const swUp     = 6
-Const swEnter  = 7
-Const swCoinDoor  = 8
-Const swLLFlip = 9
-Const swLRFlip = 11
-Const swULFlip = 13
-Const swURFlip = 15
-Const swSlamTilt = 16
-Const swTilt = 17
-Const swStartButton = 19
+Const swCancel = 7
+Const swStartButton = 8
+Const swTilt = 9
+Const swSlamTilt = 10
+Const swLLFlip = 16
+Const swLRFlip = 18
+Const swULFlip = 11
+Const swURFlip = 12
 
 Private swStartButtonX,swCoinDoorX,swSlamTiltX
 On Error Resume Next
